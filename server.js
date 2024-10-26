@@ -13,7 +13,7 @@ app.use(requestIp.mw());
 app.use(express.static('views'));  // 允许访问 views 文件夹
 
 // MongoDB Atlas 连接字符串 如果你想问我为什么不用别的数据库，我只能说我懒，而且这个数据库免费，我还不会用别的数据库
-mongoose.connect('填入你的mongodbaltas连接链接', {
+mongoose.connect('mongodb+srv://24hours:MuskZhouMQ%402024@cluster0.w5sbd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }).then(() => console.log("Connected to MongoDB"))

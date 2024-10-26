@@ -497,9 +497,172 @@ form {
     background: rgba(0,0,0,0.1);
     color: var(--ink-color);
 }
+
+@media screen and (max-width: 768px) {
+            .content-container {
+                flex-direction: column;
+                position: relative;
+                height: auto;
+            }
+
+            .main-content {
+                flex: none;
+                height: auto;
+                padding: 20px;
+                min-height: calc(100vh - 50px);
+            }
+
+            .sidebar {
+                position: fixed;
+                right: -100%;
+                top: 0;
+                width: 85%;
+                height: 100vh;
+                transition: right 0.3s ease;
+                z-index: 1000;
+                box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            }
+
+            .sidebar.active {
+                right: 0;
+            }
+
+            .sidebar-toggle {
+                position: fixed;
+                right: 20px;
+                bottom: 20px;
+                width: 50px;
+                height: 50px;
+                background: var(--sepia-bg);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                z-index: 1001;
+                cursor: pointer;
+                border: 1px dashed rgba(0,0,0,0.2);
+            }
+
+            .sidebar-toggle::before {
+                content: "📜";
+                font-size: 24px;
+            }
+
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.3);
+                z-index: 999;
+                backdrop-filter: blur(3px);
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            /* 调整主要内容的样式 */
+            h1 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+
+            h1 span {
+                font-size: 12px;
+                letter-spacing: 4px;
+            }
+
+            #latestEntry {
+                padding: 25px;
+                font-size: 16px;
+                margin: 15px 0;
+            }
+
+            #content {
+                min-height: 120px;
+                font-size: 14px;
+                padding: 15px;
+            }
+
+            button {
+                padding: 12px;
+                font-size: 14px;
+                letter-spacing: 4px;
+            }
+
+            .history-item {
+                padding: 15px;
+                margin: 10px 0;
+                font-size: 14px;
+            }
+
+            .timestamp {
+                font-size: 11px;
+                margin-top: 10px;
+            }
+
+            #persistentMessage {
+                font-size: 12px;
+                padding: 10px;
+            }
+
+            /* 优化滚动体验 */
+            .main-content, .sidebar {
+                -webkit-overflow-scrolling: touch;
+            }
+
+            /* 添加侧边栏关闭按钮 */
+            .sidebar-close {
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                opacity: 0.5;
+            }
+
+            .sidebar-close::before {
+                content: "✕";
+                font-size: 20px;
+            }
+        }
+
+        /* 添加平滑的过渡效果 */
+        .fade-enter {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        .fade-enter-active {
+            opacity: 1;
+            transform: translateX(0);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        /* 优化点击态 */
+        @media (hover: none) {
+            .history-item:active {
+                background: rgba(255, 255, 255, 0.6);
+            }
+
+            button:active {
+                transform: translateY(1px);
+                background: rgba(255,255,255,0.3);
+            }
+        }
     </style>
 </head>
 <body>
+    <div class="sidebar-toggle"></div>
+    <div class="sidebar-overlay"></div>
     <div class="container">
         <div id="persistentMessage">
             <div class="system-notice">如果超过24小时无人更新内容，系统将自动删除过去的所有内容</div>
@@ -793,6 +956,77 @@ setInterval(() => {
         loadEntries();
         addPoeticHint(); // 初始添加一条诗意提示
     });
+
+    document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarToggle = document.querySelector('.sidebar-toggle');
+            const overlay = document.querySelector('.sidebar-overlay');
+            
+            // 创建关闭按钮
+            const closeButton = document.createElement('div');
+            closeButton.className = 'sidebar-close';
+            sidebar.insertBefore(closeButton, sidebar.firstChild);
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+                
+                if(sidebar.classList.contains('active')) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
+                }
+            }
+
+            sidebarToggle.addEventListener('click', toggleSidebar);
+            closeButton.addEventListener('click', toggleSidebar);
+            overlay.addEventListener('click', toggleSidebar);
+
+            // 添加触摸滑动关闭侧边栏
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            sidebar.addEventListener('touchstart', e => {
+                touchStartX = e.touches[0].clientX;
+            }, { passive: true });
+
+            sidebar.addEventListener('touchmove', e => {
+                touchEndX = e.touches[0].clientX;
+                const diff = touchStartX - touchEndX;
+                
+                if(diff > 50) { // 向左滑动超过50px
+                    toggleSidebar();
+                }
+            }, { passive: true });
+
+            // 处理方向键
+            document.addEventListener('keydown', e => {
+                if(e.key === 'Escape' && sidebar.classList.contains('active')) {
+                    toggleSidebar();
+                }
+            });
+
+            // 优化历史记录项的加载动画
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting) {
+                        entry.target.classList.add('fade-enter-active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            });
+
+            // 监听新添加的历史记录项
+            const originalDisplayEntries = window.displayEntries;
+            window.displayEntries = function(entries) {
+                originalDisplayEntries(entries);
+                
+                document.querySelectorAll('.history-item').forEach(item => {
+                    item.classList.add('fade-enter');
+                    observer.observe(item);
+                });
+            };
+        });
 </script>
 </body>
 </html>
