@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>岁月留声</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "PingFang SC", "Microsoft YaHei", serif;
+        }
+
+        :root {
+            --sepia-bg: rgba(251, 238, 230, 0.95);
+            --ink-color: #2c3e50;
+            --faded-ink: #666;
+            --paper-shadow: rgba(160, 147, 130, 0.2);
+            --faded-message: rgba(0, 0, 0, 0.4);
+            --old-paper: #f7e6d3;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes floatingText {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes paperTexture {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        body, html {
+            height: 100%;
+            margin: 0;
+            background: var(--old-paper);
+            color: var(--ink-color);
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(to right, rgba(0,0,0,0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0,0,0,0.02) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            background: 
+                linear-gradient(to right, rgba(251, 238, 230, 0.9), rgba(251, 238, 230, 0.95)),
+                url("data:image/png;base64,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");
+            animation: paperTexture 120s linear infinite;
+        }
+
+        #persistentMessage {
+            background-color: transparent;
+            color: var(--faded-message);
+            padding: 15px 20px;
+            text-align: center;
+            font-size: 14px;
+            font-style: italic;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+            animation: floatingText 3s ease-in-out infinite;
+        }
+
+        .content-container {
+            display: flex;
+            flex: 1;
+            padding-top: 20px;
+        }
+
+        .main-content {
+            flex: 3;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar {
+            flex: 1.5;
+            padding: 40px;
+            background: rgba(251, 238, 230, 0.3);
+            border-left: 1px dashed rgba(0,0,0,0.1);
+            height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(5px);
+        }
+
+        h1, h2 {
+            color: var(--ink-color);
+            margin-bottom: 30px;
+            font-weight: 300;
+            letter-spacing: 6px;
+            text-align: center;
+            position: relative;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1::before, h1::after {
+            content: '『';
+            position: absolute;
+            left: 20%;
+            opacity: 0.2;
+            font-size: 0.8em;
+        }
+
+        h1::after {
+            content: '』';
+            left: auto;
+            right: 20%;
+        }
+
+        h1 span {
+            display: block;
+            font-size: 0.4em;
+            letter-spacing: 8px;
+            opacity: 0.5;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        #latestEntry {
+            margin: 20px 0;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            font-size: 18px;
+            line-height: 2;
+            color: var(--ink-color);
+            box-shadow: 0 4px 15px var(--paper-shadow);
+            transition: all 0.8s ease;
+            border: 1px dashed rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        #latestEntry::before {
+            content: '"';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 60px;
+            opacity: 0.1;
+            font-family: serif;
+        }
+
+        #latestEntry::after {
+            content: '"';
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 60px;
+            opacity: 0.1;
+            font-family: serif;
+        }
+
+        #content {
+            width: 100%;
+            min-height: 150px;
+            padding: 25px;
+            border: 1px dashed rgba(0,0,0,0.2);
+            border-radius: 12px;
+            font-size: 16px;
+            line-height: 1.8;
+            background: rgba(255, 255, 255, 0.8);
+            color: var(--ink-color);
+            resize: none;
+            transition: all 0.5s ease;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        #content:focus {
+            outline: none;
+            border-style: solid;
+            box-shadow: 0 0 25px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        #charCount {
+            position: absolute;
+            right: 15px;
+            bottom: 60px;
+            font-size: 12px;
+            color: var(--faded-ink);
+            font-style: italic;
+            text-shadow: 1px 1px 1px rgba(255,255,255,0.8);
+        }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            margin-top: 20px;
+            background: transparent;
+            border: 1px dashed rgba(0,0,0,0.2);
+            color: var(--ink-color);
+            font-size: 16px;
+            letter-spacing: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+        }
+
+        button:hover {
+            background: rgba(255,255,255,0.2);
+            border-style: solid;
+            letter-spacing: 8px;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .history-item {
+    padding: 25px;
+    margin: 20px 0;
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px dashed rgba(0,0,0,0.1);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+
+
+.timestamp {
+    display: block;
+    margin-top: 15px;
+    font-size: 12px;
+    color: var(--faded-ink);
+    font-style: italic;
+    text-align: right;
+    border-top: 1px dashed rgba(0,0,0,0.1);
+    padding-top: 10px;
+}
+
+
+        .history-item::before {
+            content: '『';
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover::before {
+            opacity: 0.2;
+            left: 15px;
+        }
+
+
+
+        .ink-decoration {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    filter: blur(50px);
+    animation: inkSpread 10s infinite ease-in-out;
+    pointer-events: none;
+}
+
+
+}
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.1);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0,0,0,0.2);
+        }
+
+        /* 添加诗意的提示文字动画 */
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        .poetic-hint {
+            position: absolute;
+            font-size: 12px;
+            color: var(--faded-ink);
+            opacity: 0.3;
+            pointer-events: none;
+            animation: fadeInOut 4s infinite;
+        }
+
+        /* 随机位置的装饰性文字 */
+        .decorative-text {
+            position: fixed;
+            color: var(--faded-ink);
+            opacity: 0.1;
+            font-size: 14px;
+            pointer-events: none;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+        }
+        #persistentMessage {
+    background-color: transparent;
+    color: var(--faded-message);
+    padding: 15px 20px;
+    text-align: center;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.system-notice {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.poetic-notice {
+    font-size: 13px;
+    font-style: italic;
+    opacity: 0.8;
+    animation: floatingText 3s ease-in-out infinite;
+}
+
+form {
+    position: relative;
+    margin: 30px 0;
+}
+
+#content {
+    width: 100%;
+    min-height: 150px;
+    padding: 25px;
+    border: 1px dashed rgba(0,0,0,0.2);
+    border-radius: 12px;
+    font-size: 16px;
+    line-height: 1.8;
+    background: rgba(255, 255, 255, 0.8);
+    color: var(--ink-color);
+    resize: none;
+}
+
+#charCount {
+    position: absolute;
+    right: 15px;
+    bottom: 75px;
+    font-size: 12px;
+    color: var(--faded-ink);
+    font-style: italic;
+}
+
+/* 添加在 <style> 标签中的基础样式 */
+    :root {
+    --sepia-bg: rgba(251, 238, 230, 0.95);
+    --ink-color: #2c3e50;
+    --faded-ink: #666;
+    --paper-shadow: rgba(160, 147, 130, 0.2);
+    --faded-message: rgba(0, 0, 0, 0.4);
+}
+
+.content-container {
+    display: flex;
+    flex: 1;
+    padding-top: 20px;
+}
+
+.main-content {
+    flex: 3;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.sidebar {
+    flex: 1.5;
+    padding: 40px;
+    background: rgba(251, 238, 230, 0.3);
+    border-left: 1px dashed rgba(0,0,0,0.1);
+    height: 100vh;
+    overflow-y: auto;
+}
+
+@keyframes falling-petals {
+    0% {
+        transform: translateY(-10vh) rotate(0deg);
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.petal {
+    position: fixed;
+    pointer-events: none;
+    width: 10px;
+    height: 10px;
+    background: rgba(255, 183, 197, 0.2);
+    border-radius: 50% 0 50% 50%;
+    animation: falling-petals 10s linear infinite;
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+.typing-ripple {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: ripple 1s ease-out forwards;
+}
+
+.time-ago {
+    display: inline-block;
+    margin-left: 10px;
+    color: #999;
+    font-size: 11px;
+    background: rgba(0,0,0,0.05);
+    padding: 2px 8px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+
+.history-item:hover .time-ago {
+    background: rgba(0,0,0,0.1);
+    color: var(--ink-color);
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="persistentMessage">
+            <div class="system-notice">如果超过24小时无人更新内容，系统将自动删除过去的所有内容</div>
+            <div class="poetic-notice">光阴似箭，岁月如梭，此刻永恒</div>
+        </div>        <div class="content-container">
+            <div class="main-content">
+                <h1>岁月留声<span>时光织成锦，留下此刻永恒</span></h1>
+                <div id="latestEntry" class="animate__animated animate__fadeIn">
+                    光阴荏苒，岁月静好，且让这一刻停留...
+                </div>
+
+                <form id="inputForm">
+                    <textarea 
+                        id="content" 
+                        maxlength="500" 
+                        placeholder="在此处，写下你想永远珍藏的瞬间..." 
+                        required
+                    ></textarea>
+                    <div id="charCount">0 / 500</div>
+                    <button type="submit">留 下 此 刻 印 记</button>
+                </form>
+            </div>
+
+            <div class="sidebar">
+                <h2>时光长廊</h2>
+                <div id="allEntries">
+                    岁月静待你的故事...
+                </div>
+            </div>
+        </div>
+
+        <div class="ink-splash"></div>
+        
+        <!-- 添加随机装饰性文字 -->
+        <div class="decorative-text" style="top: 10%; left: 5%">光阴似箭</div>
+        <div class="decorative-text" style="top: 30%; right: 5%">岁月如歌</div>
+        <div class="decorative-text" style="bottom: 20%; left: 8%">时光荏苒</div>
+    </div>
+
+   <!-- 前面的 HTML 和 CSS 代码保持不变，只修改 script 部分 -->
+
+<script>
+    const contentInput = document.getElementById('content');
+    const charCount = document.getElementById('charCount');
+    const poeticHints = [
+        "在这里，时光静好...",
+        "记录下此刻的感动...",
+        "让回忆永远铭记...",
+        "时光荏苒，岁月如歌..."
+    ];
+
+    // 获取历史记录
+    async function loadEntries() {
+        try {
+            const response = await fetch('/entries');
+            const data = await response.json();
+            
+            // 显示内容和历史记录
+            if (data.entries && data.entries.length > 0) {
+                displayEntries(data.entries);
+            }
+        } catch (error) {
+            console.error('加载失败:', error);
+            // 添加优雅的错误提示
+            const latestEntry = document.getElementById('latestEntry');
+            latestEntry.innerHTML = '<div style="color: var(--faded-ink); font-style: italic;">时光飞逝，此刻尚未留下痕迹...</div>';
+        }
+    }
+
+    // 添加诗意提示
+    function addPoeticHint() {
+        const hint = document.createElement('div');
+        hint.className = 'poetic-hint';
+        hint.textContent = poeticHints[Math.floor(Math.random() * poeticHints.length)];
+        hint.style.left = Math.random() * 80 + 10 + '%';
+        hint.style.top = Math.random() * 80 + 10 + '%';
+        document.body.appendChild(hint);
+        setTimeout(() => hint.remove(), 4000);
+    }
+
+    setInterval(addPoeticHint, 5000);
+
+    // 自动调整文本框高度
+    contentInput.addEventListener('input', () => {
+        contentInput.style.height = 'auto';
+        contentInput.style.height = `${contentInput.scrollHeight}px`;
+        charCount.textContent = `${contentInput.value.length} / 500`;
+    });
+
+    // 提交新内容时的优雅过渡效果
+    document.getElementById('inputForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const content = contentInput.value;
+
+        if (!content.trim()) {
+            return; // 防止提交空内容
+        }
+
+        try {
+            const latestEntry = document.getElementById('latestEntry');
+            latestEntry.style.opacity = '0';
+            latestEntry.style.transform = 'translateY(20px)';
+            
+            setTimeout(async () => {
+                const response = await fetch('/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content })
+                });
+
+                if (!response.ok) {
+                    throw new Error('提交失败');
+                }
+
+                const data = await response.json();
+                displayEntries(data.entries);
+                
+                // 清空并重置输入框
+                contentInput.value = '';
+                charCount.textContent = '0 / 500';
+                contentInput.style.height = 'auto';
+                
+                // 优雅地显示新内容
+                latestEntry.style.opacity = '1';
+                latestEntry.style.transform = 'translateY(0)';
+            }, 300);
+        } catch (error) {
+            console.error('提交失败:', error);
+            // 添加优雅的错误提示
+            const latestEntry = document.getElementById('latestEntry');
+            latestEntry.innerHTML = '<div style="color: var(--faded-ink); font-style: italic;">时光飞逝，留痕未果，请稍后再试...</div>';
+        }
+    });
+
+// 添加一个计算时间差的函数
+function getTimeAgo(date) {
+    const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+    
+    let interval = Math.floor(seconds / 31536000); // 年
+    if (interval >= 1) {
+        return interval + ' 年前';
+    }
+    
+    interval = Math.floor(seconds / 2592000); // 月
+    if (interval >= 1) {
+        return interval + ' 个月前';
+    }
+    
+    interval = Math.floor(seconds / 86400); // 天
+    if (interval >= 1) {
+        return interval + ' 天前';
+    }
+    
+    interval = Math.floor(seconds / 3600); // 小时
+    if (interval >= 1) {
+        return interval + ' 小时前';
+    }
+    
+    interval = Math.floor(seconds / 60); // 分钟
+    if (interval >= 1) {
+        return interval + ' 分钟前';
+    }
+    
+    if(seconds < 10) return '刚刚';
+    
+    return Math.floor(seconds) + ' 秒前';
+}
+
+// 修改 displayEntries 函数中显示时间的部分
+function displayEntries(entries) {
+    if (entries && entries.length > 0) {
+        const latestEntry = document.getElementById('latestEntry');
+        latestEntry.style.opacity = '0';
+        latestEntry.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            latestEntry.innerHTML = `
+                <div class="ink-effect"></div>
+                ${entries[0].content}
+            `;
+            latestEntry.style.opacity = '1';
+            latestEntry.style.transform = 'translateY(0)';
+        }, 300);
+
+        document.getElementById('allEntries').innerHTML = entries
+            .map((entry, index) => `
+                <div class="history-item animate__animated animate__fadeInRight"
+                     style="animation-delay: ${index * 0.1}s"
+                     onclick="showHistoryContent(${index})">
+                    ${entry.content.length > 50 ? entry.content.substring(0, 50) + '...' : entry.content}
+                    <span class="timestamp">
+                        📝 ${new Date(entry.createdAt).toLocaleString('zh-CN', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })}
+                        <span class="time-ago">${getTimeAgo(entry.createdAt)}</span>
+                    </span>
+                </div>
+            `).join('');
+    } else {
+        document.getElementById('allEntries').innerHTML = `
+            <div style="text-align: center; color: var(--faded-ink); font-style: italic; padding: 20px;">
+                岁月静待你的故事...
+            </div>
+        `;
+    }
+}
+
+// 添加一个定时器来定期更新时间显示
+setInterval(() => {
+    const timeAgos = document.querySelectorAll('.time-ago');
+    const historyItems = document.querySelectorAll('.history-item');
+    
+    historyItems.forEach((item, index) => {
+        const timestamp = item.querySelector('.timestamp');
+        const dateStr = timestamp.textContent.match(/📝\s*(.*?)\s/)[1];
+        const timeAgo = getTimeAgo(new Date(dateStr));
+        item.querySelector('.time-ago').textContent = timeAgo;
+    });
+}, 60000); // 每分钟更新一次
+
+    // 展示内容时添加优雅的过渡效果
+    function displayEntries(entries) {
+        if (entries && entries.length > 0) {
+            const latestEntry = document.getElementById('latestEntry');
+            latestEntry.style.opacity = '0';
+            latestEntry.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                latestEntry.innerHTML = entries[0].content;
+                latestEntry.style.opacity = '1';
+                latestEntry.style.transform = 'translateY(0)';
+            }, 300);
+
+            document.getElementById('allEntries').innerHTML = entries
+                .map((entry, index) => `
+                    <div class="history-item" 
+                         style="animation-delay: ${index * 0.1}s"
+                         onclick="showHistoryContent(${index})">
+                        ${entry.content.length > 50 ? entry.content.substring(0, 50) + '...' : entry.content}
+                        <span class="timestamp">📝 ${new Date(entry.createdAt).toLocaleString('zh-CN', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })}</span>
+                    </div>
+                `).join('');
+        } else {
+            // 处理空记录的情况
+            document.getElementById('allEntries').innerHTML = `
+                <div style="text-align: center; color: var(--faded-ink); font-style: italic; padding: 20px;">
+                    岁月静待你的故事...
+                </div>
+            `;
+        }
+    }
+
+    // 查看历史内容
+    async function showHistoryContent(index) {
+        try {
+            const response = await fetch('/entries');
+            const data = await response.json();
+            const entry = data.entries[index];
+
+            if (entry) {
+                const latestEntry = document.getElementById('latestEntry');
+                latestEntry.style.opacity = '0';
+                latestEntry.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    latestEntry.innerHTML = entry.content;
+                    latestEntry.style.opacity = '1';
+                    latestEntry.style.transform = 'translateY(0)';
+                }, 300);
+            }
+        } catch (error) {
+            console.error('加载历史内容失败:', error);
+            // 添加优雅的错误提示
+            const latestEntry = document.getElementById('latestEntry');
+            latestEntry.innerHTML = '<div style="color: var(--faded-ink); font-style: italic;">时光追溯未果，请稍后再试...</div>';
+        }
+    }
+
+    // 页面加载时初始化
+    document.addEventListener('DOMContentLoaded', () => {
+        loadEntries();
+        addPoeticHint(); // 初始添加一条诗意提示
+    });
+</script>
+</body>
+</html>

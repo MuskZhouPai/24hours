@@ -1,0 +1,137 @@
+/* 基础样式 */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body, html {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    background-color: #f0f4f8;
+    color: #333;
+}
+
+/* 容器设置为填充页面布局 */
+.container {
+    display: flex;
+    flex: 1;
+    height: 100%;
+    background-color: #fff;
+    overflow: hidden;
+}
+
+/* 主内容区域样式 */
+.main-content {
+    flex: 3;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+h1, h2 {
+    color: #007acc;
+    margin-bottom: 10px;
+}
+
+/* 输入框和按钮样式 */
+form {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+#content {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    width: 100%;
+    resize: none;
+    overflow: hidden;
+    min-height: 60px;
+}
+
+button {
+    padding: 12px 24px;
+    background-color: #007acc;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #005fa3;
+}
+
+/* 最近输入内容样式（突出显示） */
+#latestEntry {
+    margin-top: 10px;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #fffbcc;
+    font-size: 22px;
+    color: #333;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-left: 5px solid #ffbf00;
+}
+
+/* 字数计数提示 */
+#charCount {
+    font-size: 14px;
+    color: #555;
+    margin-top: 5px;
+}
+
+/* 侧边栏样式 */
+.sidebar {
+    flex: 1;
+    padding: 20px;
+    background-color: #eaf2fa;
+    border-left: 2px solid #007acc;
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+#allEntries {
+    font-size: 16px;
+    color: #333;
+}
+
+#allEntries p {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ccc;
+    transition: background-color 0.3s;
+}
+
+#allEntries p:hover {
+    background-color: #d0e6f5;
+}
+
+#allEntries p .text {
+    flex: 1;
+    max-width: calc(100% - 100px); /* 保留空间给时间戳 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#allEntries p .timestamp {
+    width: 100px;
+    font-size: 12px;
+    color: #666;
+    text-align: right;
+}
+
