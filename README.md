@@ -25,5 +25,7 @@
 
 > [!IMPORTANT]
 > 初始化项目
+> ```bash
 > npm init -y
 > npm install express mongoose dotenv body-parser request-ip user-agent
+> ```
