@@ -5,8 +5,6 @@ const requestIp = require('request-ip');
 const userAgent = require('user-agent');
 const fs = require('fs');
 const path = require('path');
-require('dotenv').config(); // 加载 .env 文件中的环境变量
-
 const { Entry, Setting } = require('./models/entry');  // 注意模型文件的路径和结构
 
 const app = express();
@@ -14,27 +12,8 @@ app.use(bodyParser.json());
 app.use(requestIp.mw());
 app.use(express.static('views'));  // 允许访问 views 文件夹
 
-// 从环境变量中获取 MongoDB 的各项配置
-const dbConfig = {
-    host: process.env.MONGODB_HOST || 'localhost',
-    port: process.env.MONGODB_PORT || 27017,
-    database: process.env.MONGODB_DATABASE || 'mydatabase',
-    username: process.env.MONGODB_USERNAME || '',
-    password: process.env.MONGODB_PASSWORD || ''
-};
-
-// 构建 MongoDB URI
-let mongoURI;
-if (dbConfig.username && dbConfig.password) {
-    // 如果提供了用户名和密码
-    mongoURI = `mongodb://${dbConfig.username}:${dbConfig.password}@${dbConfig.host}:${dbConfig.port}/${dbConfig.database}`;
-} else {
-    // 如果不需要用户名和密码
-    mongoURI = `mongodb://${dbConfig.host}:${dbConfig.port}/${dbConfig.database}`;
-}
-
-// 连接到 MongoDB
-mongoose.connect(mongoURI, {
+// MongoDB Atlas 连接字符串 如果你想问我为什么不用别的数据库，我只能说我懒，而且这个数据库免费，我还不会用别的数据库
+mongoose.connect('填入你的mongodbaltas连接链接', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }).then(() => console.log("Connected to MongoDB"))
@@ -122,6 +101,6 @@ app.post('/submit', async (req, res) => {
     res.json({ entries });
 });
 
-app.listen(3000, () => {
-    console.log('Server running on http://localhost:3000');
+app.listen(3031, () => {
+    console.log('Server running on http://localhost:3031');
 });
