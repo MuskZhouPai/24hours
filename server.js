@@ -5,6 +5,8 @@ const requestIp = require('request-ip');
 const userAgent = require('user-agent');
 const fs = require('fs');
 const path = require('path');
+require('dotenv').config(); // 加载 .env 文件中的环境变量
+
 const { Entry, Setting } = require('./models/entry');  // 注意模型文件的路径和结构
 
 const app = express();
@@ -12,8 +14,27 @@ app.use(bodyParser.json());
 app.use(requestIp.mw());
 app.use(express.static('views'));  // 允许访问 views 文件夹
 
-// MongoDB Atlas 连接字符串
-mongoose.connect('mongodb+srv://Pixel:MuskZhouMQ%402024@pixel.yfdz1.mongodb.net/Pixel?retryWrites=true&w=majority', {
+// 从环境变量中获取 MongoDB 的各项配置
+const dbConfig = {
+    host: process.env.MONGODB_HOST || 'localhost',
+    port: process.env.MONGODB_PORT || 27017,
+    database: process.env.MONGODB_DATABASE || 'mydatabase',
+    username: process.env.MONGODB_USERNAME || '',
+    password: process.env.MONGODB_PASSWORD || ''
+};
+
+// 构建 MongoDB URI
+let mongoURI;
+if (dbConfig.username && dbConfig.password) {
+    // 如果提供了用户名和密码
+    mongoURI = `mongodb://${dbConfig.username}:${dbConfig.password}@${dbConfig.host}:${dbConfig.port}/${dbConfig.database}`;
+} else {
+    // 如果不需要用户名和密码
+    mongoURI = `mongodb://${dbConfig.host}:${dbConfig.port}/${dbConfig.database}`;
+}
+
+// 连接到 MongoDB
+mongoose.connect(mongoURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }).then(() => console.log("Connected to MongoDB"))
